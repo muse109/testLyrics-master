@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Provider;
 using Android.Util;
 using Android.Widget;
+using testLyrics.Core;
 using System;
 
 namespace testLyrics
@@ -53,72 +54,25 @@ namespace testLyrics
         public void RegistrarReceptor() {
 
             var IntentFilter = new IntentFilter();
-            //Google Android player
-            IntentFilter.AddAction("com.android.music.playstatechanged");
-            IntentFilter.AddAction("com.android.music.playbackcomplete");
             IntentFilter.AddAction("com.android.music.metachanged");
-            //HTC Music
-            IntentFilter.AddAction("com.htc.music.playstatechanged");
-            IntentFilter.AddAction("com.htc.music.playbackcomplete");
             IntentFilter.AddAction("com.htc.music.metachanged");
-            //MIUI Player
-            IntentFilter.AddAction("com.miui.player.playstatechanged");
-            IntentFilter.AddAction("com.miui.player.playbackcomplete");
             IntentFilter.AddAction("com.miui.player.metachanged");
-            //Real
-            IntentFilter.AddAction("com.real.IMP.playstatechanged");
-            IntentFilter.AddAction("com.real.IMP.playbackcomplete");
             IntentFilter.AddAction("com.real.IMP.metachanged");
-            //SEMC Music Player
-            IntentFilter.AddAction("com.sonyericsson.music.playbackcontrol.ACTION_TRACK_STARTED");
-            IntentFilter.AddAction("com.sonyericsson.music.playbackcontrol.ACTION_PAUSED");
-            IntentFilter.AddAction("com.sonyericsson.music.TRACK_COMPLETED");
             IntentFilter.AddAction("com.sonyericsson.music.metachanged");
-            //rdio
-            IntentFilter.AddAction("com.rdio.android.metachanged");
             IntentFilter.AddAction("com.rdio.android.playstatechanged");
-            //Samsung Music Player
-            IntentFilter.AddAction("com.samsung.sec.android.MusicPlayer.playstatechanged");
-            IntentFilter.AddAction("com.samsung.sec.android.MusicPlayer.playbackcomplete");
             IntentFilter.AddAction("com.samsung.sec.android.MusicPlayer.metachanged");
-            IntentFilter.AddAction("com.sec.android.app.music.playstatechanged");
-            IntentFilter.AddAction("com.sec.android.app.music.playbackcomplete");
             IntentFilter.AddAction("com.sec.android.app.music.metachanged");
-            //Winamp
-            IntentFilter.AddAction("com.nullsoft.winamp.playstatechanged");
             IntentFilter.AddAction("com.nullsoft.winamp.metachanged");
-            //Amazon
-            IntentFilter.AddAction("com.amazon.mp3.playstatechanged");
             IntentFilter.AddAction("com.amazon.mp3.metachanged");
-            //Rhapsody
-            IntentFilter.AddAction("com.rhapsody.playstatechanged");
             IntentFilter.AddAction("com.rhapsody.metachanged");
-            //PlayerPro 
-            // IntentFilter.AddAction("com.tbig.playerpro.playstatechanged");
-            IntentFilter.AddAction("com.tbig.playerpro.metachanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.shufflechanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.repeatchanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.albumartchanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.queuechanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.ratingchanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.playbackcomplete");
-            //PowerAmp
-            IntentFilter.AddAction("com.maxmpz.audioplayer.playstatechanged");
             IntentFilter.AddAction("com.maxmpz.audioplayer.metachanged");
-            // MyTouch4G
             IntentFilter.AddAction("com.real.IMP.metachanged");
-            //appollo
             IntentFilter.AddAction("com.andrew.apollo.metachanged");
-
-            //scrobblers detect for players (poweramp for example)
-            //Last.fm
             IntentFilter.AddAction("fm.last.android.metachanged");
-            IntentFilter.AddAction("fm.last.android.playbackpaused");
-            IntentFilter.AddAction("fm.last.android.playbackcomplete");
-            //A simple last.fm scrobbler
-            //  IntentFilter.AddAction("com.adam.aslfms.notify.playstatechanged");
-            //Scrobble Droid
+           // IntentFilter.AddAction("com.adam.aslfms.notify.playstatechanged");
+            IntentFilter.AddAction("com.tbig.playerpro.metachanged");
             IntentFilter.AddAction("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+            IntentFilter.AddAction("com.spotify.music.metadatachanged");
             var registro = RegisterReceiver(Receptor, IntentFilter);
           
 
@@ -192,7 +146,13 @@ namespace testLyrics
                     txtCancion.Text = track1;
                     txtAlbum.Text = album1;
                     txtDuracion.Text = duracion;
-       
+
+
+                    var obj = new BuscaLetras();
+
+                    obj.Plyrics("", artist1,track1);
+
+
                 }
             }
 
@@ -206,6 +166,14 @@ namespace testLyrics
             Receptor.Dispose();
          
         }
+
+
+
+
+
+
+
+
     };
 }
 
