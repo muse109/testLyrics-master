@@ -60,14 +60,23 @@ namespace testLyrics
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050002
-			public const int txtAlbum = 2131034114;
-			
 			// aapt resource value: 0x7f050000
-			public const int txtArtista = 2131034112;
+			public const int imgCover = 2131034112;
 			
 			// aapt resource value: 0x7f050001
-			public const int txtCancion = 2131034113;
+			public const int list_image = 2131034113;
+			
+			// aapt resource value: 0x7f050004
+			public const int txtAlbum = 2131034116;
+			
+			// aapt resource value: 0x7f050003
+			public const int txtArtista = 2131034115;
+			
+			// aapt resource value: 0x7f050002
+			public const int txtCancion = 2131034114;
+			
+			// aapt resource value: 0x7f050005
+			public const int txtDuracion = 2131034117;
 			
 			static Id()
 			{

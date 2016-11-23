@@ -1,11 +1,11 @@
 ﻿using Android.App;
-using Android.Widget;
-using Android.OS;
 using Android.Content;
-using System;
-using Android.Util;
-using Android.Provider;
 using Android.Media;
+using Android.OS;
+using Android.Provider;
+using Android.Util;
+using Android.Widget;
+using System;
 
 namespace testLyrics
 {
@@ -13,30 +13,44 @@ namespace testLyrics
     public class MainActivity : Activity
     {
         public static bool pausa { get; set; }
+        public static bool receptorRegistrado { get; set; }
+        mReceiver Receptor = new mReceiver();
+
+        public static bool DatosSeteados { get; set; }
 
         protected override void OnPause()
         {
             base.OnPause();
 
             pausa = true;
+
+
+            if (receptorRegistrado)
+            {
+                UnregisterReceiver(Receptor);
+                Receptor = null;
+                receptorRegistrado = false;
+            }
+
+
         }
 
         protected override void OnResume()
         {
             base.OnResume();
             pausa = false;
+
+            if (!receptorRegistrado)
+            {
+                if (Receptor == null)
+                    Receptor = new mReceiver();
+                RegistrarReceptor();
+                receptorRegistrado = true;
+            }
+
         }
 
-        protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
-
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
-
-
-
-            #region Broadcast
+        public void RegistrarReceptor() {
 
             var IntentFilter = new IntentFilter();
             //Google Android player
@@ -80,8 +94,8 @@ namespace testLyrics
             IntentFilter.AddAction("com.rhapsody.playstatechanged");
             IntentFilter.AddAction("com.rhapsody.metachanged");
             //PlayerPro 
-            IntentFilter.AddAction("com.tbig.playerpro.playstatechanged");
-            //IntentFilter.AddAction("com.tbig.playerpro.metachanged");
+            // IntentFilter.AddAction("com.tbig.playerpro.playstatechanged");
+            IntentFilter.AddAction("com.tbig.playerpro.metachanged");
             //IntentFilter.AddAction("com.tbig.playerpro.shufflechanged");
             //IntentFilter.AddAction("com.tbig.playerpro.repeatchanged");
             //IntentFilter.AddAction("com.tbig.playerpro.albumartchanged");
@@ -105,15 +119,19 @@ namespace testLyrics
             //  IntentFilter.AddAction("com.adam.aslfms.notify.playstatechanged");
             //Scrobble Droid
             IntentFilter.AddAction("net.jjc1138.android.scrobbler.action.MUSIC_STATUS");
+            var registro = RegisterReceiver(Receptor, IntentFilter);
+          
 
+        }
 
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
 
+            // Set our view from the "main" layout resource
+            SetContentView(Resource.Layout.Main);
+            RegistrarReceptor();           
 
-            //  Toast.MakeText(this, registro.Extras.GetString("track").ToString(), ToastLength.Long).Show();
-
-            #endregion
-            mReceiver lbr = new mReceiver();
-            var registro = RegisterReceiver(lbr, IntentFilter);
 
             //AudioManager Manager = (AudioManager)this.GetSystemService(Context.AudioService);
             //if (Manager.IsMusicActive)
@@ -121,18 +139,6 @@ namespace testLyrics
 
             //    // do something - or do it not
             //}
-
-            string cancion = Intent.GetStringExtra("Cancion") ?? "-1";
-            string Artista = Intent.GetStringExtra("Artista") ?? "-1";
-            string Album = Intent.GetStringExtra("Album") ?? "-1";
-            if (cancion != "-1")
-            {
-                SetInfo(Artista, cancion, Album,Intent);
-                UnregisterReceiver(lbr);
-            }
-
-
-
             //http://stackoverflow.com/questions/25215878/how-to-update-the-ui-of-activity-from-broadcastreceiver
 
 
@@ -140,71 +146,66 @@ namespace testLyrics
 
         }
 
-        public void SetInfo(string Artista, string Cancion, string Album, Intent intent) {
-
-            var txtArtista = FindViewById<TextView>(Resource.Id.txtArtista);
-            var txtCancion = FindViewById<TextView>(Resource.Id.txtCancion);
-            var txtAlbum = FindViewById<TextView>(Resource.Id.txtAlbum);
-
-            txtArtista.Text = Artista;
-            txtCancion.Text = Cancion;
-            txtAlbum.Text = Album;
-
-            intent.PutExtra("Cancion", "-1");
-          
-
-        }
+       
 
         [BroadcastReceiver]
         public class mReceiver : BroadcastReceiver
         {
             public override void OnReceive(Context context, Intent intent)
             {
-                if (!pausa) {
+                if (!pausa)
+                {
 
-                    string action = intent.Action;
-                    string cmd = intent.GetStringExtra("command");
+                    var action = intent.Action;
+                    var cmd = intent.GetStringExtra("command");
                     Log.Verbose("mIntentReceiver.onReceive ", action + " / " + cmd);
-                    string lyric = intent.GetStringExtra("lyric");
-                    string artist1 = intent.GetStringExtra(MediaStore.Audio.AudioColumns.Artist);
-                    string album1 = intent.GetStringExtra(MediaStore.Audio.AlbumColumns.Album);
-                    string track1 = intent.GetStringExtra(MediaStore.Audio.AudioColumns.Track);
-                    long duration1 = intent.GetLongExtra(MediaStore.Audio.AudioColumns.Duration, 0);
+                    var lyric = intent.GetStringExtra("lyric");
+                    var artist1 = intent.GetStringExtra(MediaStore.Audio.AudioColumns.Artist);
+                    var album1 = intent.GetStringExtra(MediaStore.Audio.AlbumColumns.Album);
+                    var track1 = intent.GetStringExtra(MediaStore.Audio.AudioColumns.Track);
+                    var duration1 = intent.GetLongExtra(MediaStore.Audio.AudioColumns.Duration,0);
 
+                    var duracion = "";                   
+                       
+                            var time = duration1;
+                            var seconds = time / 1000;
+                            var minutes = seconds / 60;
+                            seconds = seconds % 60;
 
-                    //Toast.MakeText(context, "Command : " + action + "\n Artist : " + artist1 + "\n Album :" + album1 + "\n Track : " + track1 + "\n Lyric : " + lyric, ToastLength.Long).Show();
+                            if (seconds < 10)
+                            {
+                                var csongs_duration = minutes.ToString() + ":0" + seconds.ToString();
+                                duracion = csongs_duration;
+                            }
+                            else
+                            {
+                            var csongs_duration = minutes.ToString() + ":" + seconds.ToString();
+                                duracion = csongs_duration;
+                            }
 
+                    var txtArtista = ((Activity)context).FindViewById<TextView>(Resource.Id.txtArtista);
+                    var txtCancion = ((Activity)context).FindViewById<TextView>(Resource.Id.txtCancion);
+                    var txtAlbum = ((Activity)context).FindViewById<TextView>(Resource.Id.txtAlbum);
+                    var txtDuracion = ((Activity)context).FindViewById<TextView>(Resource.Id.txtDuracion);
 
-
-                    Intent it = new Intent(context, typeof(MainActivity));
-
-                    it.PutExtra("Artista", artist1);
-                    it.PutExtra("Album", album1);
-                    it.PutExtra("Cancion", track1);
-                    context.StartActivity(it);
+                    txtArtista.Text = artist1;
+                    txtCancion.Text = track1;
+                    txtAlbum.Text = album1;
+                    txtDuracion.Text = duracion;
+       
                 }
-                
-
-
-                // //String action = intent.Getac();
-                // string cmd = intent.GetStringExtra("command");
-                //// Log.v("tag ", action + " / " + cmd);
-                // string artist = intent.GetStringExtra("artist");
-                // string album = intent.GetStringExtra("album");
-                // string track = intent.GetStringExtra("track");
-                // //Log.v("tag", artist + ":" + album + ":" + track);
-                // Toast.MakeText(context, track + " " + artist + " ", ToastLength.Long).Show();
             }
 
 
-       
+
 
         }
 
-
-
-
-
+        public void Dispose()
+        {
+            Receptor.Dispose();
+         
+        }
     };
 }
 

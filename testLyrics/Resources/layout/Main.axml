@@ -1,24 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:text="Artista"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip">
+<!--  ListRow Left sied Thumbnail image -->
+    <LinearLayout
+        android:id="@+id/imgCover"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/txtArtista" />
+        android:padding="3dip"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/white"
+        android:layout_marginRight="5dip">
+        <ImageView
+            android:id="@+id/list_image"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:src="@drawable/icon" />
+    </LinearLayout>
+<!-- Title Of Song-->
     <TextView
+        android:id="@+id/txtCancion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgCover"
+        android:layout_toRightOf="@+id/imgCover"
         android:text="Cancion"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtCancion" />
+        android:typeface="sans"
+        android:textSize="20dip"
+        android:textStyle="bold" />
+<!-- Artist Name -->
     <TextView
-        android:text="Album"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
+        android:id="@+id/txtArtista"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/txtAlbum" />
-</LinearLayout>
+        android:layout_below="@id/txtCancion"
+        android:textSize="15dip"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/imgCover"
+        android:text="Artista" />
+<!-- Album Name -->
+    <TextView
+        android:id="@+id/txtAlbum"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtArtista"
+        android:textSize="15dip"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/imgCover"
+        android:text="Album" />
+<!-- Rightend Duration -->
+    <TextView
+        android:id="@+id/txtDuracion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/txtCancion"
+        android:gravity="right"
+        android:text="5:45"
+        android:layout_marginRight="5dip"
+        android:textSize="15dip"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+</RelativeLayout>
