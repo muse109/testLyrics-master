@@ -8,6 +8,7 @@ using Android.Widget;
 using testLyrics.Core;
 using System;
 using System.Text.RegularExpressions;
+using Android.Text;
 
 namespace testLyrics
 {
@@ -142,17 +143,19 @@ namespace testLyrics
                     var txtCancion = ((Activity)context).FindViewById<TextView>(Resource.Id.txtCancion);
                     var txtAlbum = ((Activity)context).FindViewById<TextView>(Resource.Id.txtAlbum);
                     var txtDuracion = ((Activity)context).FindViewById<TextView>(Resource.Id.txtDuracion);
+                    var txtletras = ((Activity)context).FindViewById<TextView>(Resource.Id.txtletras);
 
                     txtArtista.Text = artist1;
                     txtCancion.Text = track1;
                     txtAlbum.Text = album1;
                     txtDuracion.Text = duracion;
 
+                    txtletras.Text = "...";
+
 
                     var obj = new BuscaLetras();
 
-                   ;
-
+                  
                     try
                     {
                         var html = await obj.PlyricsAsync("", artist1, track1);
@@ -162,9 +165,16 @@ namespace testLyrics
 
                             var letra = ExtractString(html.DocumentNode.InnerHtml, "!-- start of lyrics --", "!-- end of lyrics --");
 
-                            
-                            Toast.MakeText(context,  letra, ToastLength.Long).Show();
+                            txtletras.Text = letra;
 
+                            Html.FromHtml(txtletras.Text).ToString().Trim();
+                     
+                            //Toast.MakeText(context,  letra, ToastLength.Long).Show();
+
+                        }
+                        else {
+
+                            txtletras.Text = "No Disponible";
                         }
 
                     }
@@ -192,7 +202,7 @@ namespace testLyrics
 
               var resultado=  texto.Substring(startIndex, endIndex - startIndex);
 
-                return resultado.Replace("<br>", "\n");
+                return resultado;
 
 
             }

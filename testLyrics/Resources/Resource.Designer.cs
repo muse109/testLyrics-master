@@ -78,6 +78,9 @@ namespace testLyrics
 			// aapt resource value: 0x7f050005
 			public const int txtDuracion = 2131034117;
 			
+			// aapt resource value: 0x7f050006
+			public const int txtletras = 2131034118;
+			
 			static Id()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

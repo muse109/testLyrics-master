@@ -63,4 +63,22 @@
         android:textSize="15dip"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
+    <ScrollView
+        android:layout_below="@id/txtAlbum"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:text=""
+                android:id="@+id/txtletras"
+                android:inputType="textMultiLine"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

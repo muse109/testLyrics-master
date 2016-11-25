@@ -15,7 +15,7 @@ namespace testLyrics.Core
             String html;
 
 
-            var Url = "http://www.plyrics.com/lyrics/armorforsleep/basementghostsinging.html";
+       
 
 
 
@@ -26,35 +26,14 @@ namespace testLyrics.Core
             if (htmlArtist.ToLower().StartsWith("the"))
                 htmlArtist = htmlArtist.Substring(3);
 
-            var urlString = String.Format("http://www.plyrics.com/lyrics/{0}/{1}.html",
-                    htmlArtist.ToLower(), htmlSong.ToLower());
-
-            var paginavalida = false;
-
-            using (var client = new ClienteWeb())
-            {
-                client.HeadOnly = true;
-                try
-                {
-                    string s1 = client.DownloadString(urlString);
-
-                    paginavalida = true;
-                }
-                catch (Exception ex)
-                {
-                    paginavalida = false;
-                  
-                }
-              
-               
-            }
+            var urlvalida = ValidaUrl(htmlArtist,htmlSong);
 
 
-            if (paginavalida)
+            if (urlvalida != "-1")
             {
 
                 var web = new HtmlWeb();
-                var page = web.LoadFromWebAsync(urlString);
+                var page = web.LoadFromWebAsync(urlvalida);
 
 
                 return await page;
@@ -98,6 +77,41 @@ namespace testLyrics.Core
         }
 
 
+        public string ValidaUrl(string artista, string cancion) {
+
+            var urlString = "";
+            var pages = new string[] 
+            { "http://www.plyrics.com/lyrics/{0}/{1}.html",
+                "http://www.alivelyrics.com/{2}/{0}/{1}.html" };
+
+
+            foreach (var item in pages)
+            {
+              urlString = String.Format(item,artista.ToLower(), cancion.ToLower(), artista[0].ToString().ToLower());
+
+                using (var client = new ClienteWeb())
+                {
+                    client.HeadOnly = true;
+                    try
+                    {
+                        var s1 = client.DownloadString(urlString);
+
+                        break;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        urlString = "-1";
+
+                    }
+
+
+                }
+
+            }
+            return urlString;
+
+        }
 
     }
 }
