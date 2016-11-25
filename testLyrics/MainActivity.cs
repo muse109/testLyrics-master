@@ -7,6 +7,7 @@ using Android.Util;
 using Android.Widget;
 using testLyrics.Core;
 using System;
+using System.Text.RegularExpressions;
 
 namespace testLyrics
 {
@@ -105,7 +106,7 @@ namespace testLyrics
         [BroadcastReceiver]
         public class mReceiver : BroadcastReceiver
         {
-            public override void OnReceive(Context context, Intent intent)
+            public override async void OnReceive(Context context, Intent intent)
             {
                 if (!pausa)
                 {
@@ -117,25 +118,25 @@ namespace testLyrics
                     var artist1 = intent.GetStringExtra(MediaStore.Audio.AudioColumns.Artist);
                     var album1 = intent.GetStringExtra(MediaStore.Audio.AlbumColumns.Album);
                     var track1 = intent.GetStringExtra(MediaStore.Audio.AudioColumns.Track);
-                    var duration1 = intent.GetLongExtra(MediaStore.Audio.AudioColumns.Duration,0);
+                    var duration1 = intent.GetLongExtra(MediaStore.Audio.AudioColumns.Duration, 0);
 
-                    var duracion = "";                   
-                       
-                            var time = duration1;
-                            var seconds = time / 1000;
-                            var minutes = seconds / 60;
-                            seconds = seconds % 60;
+                    var duracion = "";
 
-                            if (seconds < 10)
-                            {
-                                var csongs_duration = minutes.ToString() + ":0" + seconds.ToString();
-                                duracion = csongs_duration;
-                            }
-                            else
-                            {
-                            var csongs_duration = minutes.ToString() + ":" + seconds.ToString();
-                                duracion = csongs_duration;
-                            }
+                    var time = duration1;
+                    var seconds = time / 1000;
+                    var minutes = seconds / 60;
+                    seconds = seconds % 60;
+
+                    if (seconds < 10)
+                    {
+                        var csongs_duration = minutes.ToString() + ":0" + seconds.ToString();
+                        duracion = csongs_duration;
+                    }
+                    else
+                    {
+                        var csongs_duration = minutes.ToString() + ":" + seconds.ToString();
+                        duracion = csongs_duration;
+                    }
 
                     var txtArtista = ((Activity)context).FindViewById<TextView>(Resource.Id.txtArtista);
                     var txtCancion = ((Activity)context).FindViewById<TextView>(Resource.Id.txtCancion);
@@ -150,16 +151,59 @@ namespace testLyrics
 
                     var obj = new BuscaLetras();
 
-                    obj.Plyrics("", artist1,track1);
+                   ;
 
+                    try
+                    {
+                        var html = await obj.PlyricsAsync("", artist1, track1);
+
+                        if (html != null)
+                        {
+
+                            var letra = ExtractString(html.DocumentNode.InnerHtml, "!-- start of lyrics --", "!-- end of lyrics --");
+
+                            
+                            Toast.MakeText(context,  letra, ToastLength.Long).Show();
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw;
+                    }
+                   
+
+
+
+
+                    }
 
                 }
+
+
+            public string ExtractString(string texto, string stag, string ftag)
+            {
+                // You should check for errors in real-world code, omitted for brevity
+                var startTag = "<" + stag + ">";
+                var startIndex = texto.IndexOf(startTag) + startTag.Length;
+                var endIndex = texto.IndexOf("<" + ftag + ">", startIndex);
+
+              var resultado=  texto.Substring(startIndex, endIndex - startIndex);
+
+                return resultado.Replace("<br>", "\n");
+
+
             }
-
-
-
-
         }
+
+
+
+
+        
+
+       
 
         public void Dispose()
         {
